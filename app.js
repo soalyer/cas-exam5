@@ -397,7 +397,7 @@
     const draft = state.drafts[question.id];
     const hasWork = hasDraftWork(draft);
     const status = hasWork ? "In progress" : attempt ? `${points(earned(attempt))} / ${points(question.points)} pts` : "";
-    return `<a class="question-row ${attempt && !hasWork ? "is-scored" : ""}" href="${esc(questionUrl(question, source))}"><span class="question-details"><strong>${esc(questionTitle(question))}</strong>${chapterTags(question)}</span><span class="question-points">${points(question.points)} pts</span><span class="status-pill ${hasWork ? "status-active" : ""}">${esc(status)}</span><span class="row-arrow">→</span></a>`;
+    return `<a class="question-row ${attempt && !hasWork ? "is-scored" : ""}" href="${esc(questionUrl(question, source))}"><span class="question-details"><strong>${esc(questionTitle(question))}</strong>${chapterTags(question)}</span><span class="status-pill ${hasWork ? "status-active" : ""}">${esc(status)}</span><span class="question-points">${points(question.points)} pts</span><span class="row-arrow">→</span></a>`;
   }
 
   function renderChapterFilter() {
