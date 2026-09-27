@@ -24,6 +24,7 @@
   let libraryChapter = "all";
   let libraryMode = "chapter";
   let libraryExam = EXAMS[0].id;
+  let homePeriod = "all";
   let toastTimer;
   let paneRatio = 0.52;
   let paneResizeObserver;
@@ -343,23 +344,40 @@
     return `<div class="page-heading"><div class="eyebrow">${esc(eyebrow)}</div><h1>${esc(title)}</h1>${description ? `<p>${esc(description)}</p>` : ""}</div>`;
   }
 
-  function summaryStats() {
-    const latest = QUESTIONS.map(question => ({ question, attempt: latestAttempt(question.id) })).filter(item => item.attempt);
-    const earnedPoints = latest.reduce((sum, item) => sum + earned(item.attempt), 0);
-    const availablePoints = latest.reduce((sum, item) => sum + item.question.points, 0);
-    return { completed: latest.length, attempts: state.attempts.length, earnedPoints, availablePoints };
+  function summaryStats(period) {
+    const start = new Date();
+    if (period === "today") start.setHours(0, 0, 0, 0);
+    if (period === "week") {
+      start.setDate(start.getDate() - (start.getDay() + 6) % 7);
+      start.setHours(0, 0, 0, 0);
+    }
+    const latest = new Map();
+    state.attempts.forEach(attempt => {
+      const question = QUESTION_BY_ID.get(attempt.questionId);
+      if (!question) return;
+      const completedAt = new Date(attempt.completedAt).getTime();
+      if (period !== "all" && (!Number.isFinite(completedAt) || completedAt < start.getTime())) return;
+      const previous = latest.get(question.id);
+      if (!previous || completedAt > previous.completedAt) latest.set(question.id, { question, attempt, completedAt });
+    });
+    const scored = [...latest.values()];
+    const earnedPoints = scored.reduce((sum, item) => sum + earned(item.attempt), 0);
+    const availablePoints = scored.reduce((sum, item) => sum + item.question.points, 0);
+    return { completed: scored.length, scorePercent: availablePoints ? Math.round(earnedPoints / availablePoints * 100) : null };
   }
 
   function renderHome() {
-    const stats = summaryStats();
+    const stats = summaryStats(homePeriod);
     const inProgress = QUESTIONS.find(question => hasDraftWork(state.drafts[question.id]));
     const book = inProgress && CHAPTER_BY_ID.get(inProgress.chapterIds[0])?.book;
     main.innerHTML = `
       <div class="home-overview">
-        <header class="home-heading"><h1>Overview</h1></header>
+        <header class="home-heading"><h1>Overview</h1><div class="home-periods" role="group" aria-label="Score period">
+          ${[["today", "Today"], ["week", "This week"], ["all", "All time"]].map(([value, label]) => `<button type="button" data-home-period="${value}" aria-pressed="${homePeriod === value}">${label}</button>`).join("")}
+        </div></header>
         <section class="home-stats" aria-label="Study progress">
           <div><strong>${stats.completed}</strong><span>Questions scored</span></div>
-          <a href="#retry"><strong>${retryQuestions().length}</strong><span>To retry</span></a>
+          <div><strong>${stats.scorePercent === null ? "—" : `${stats.scorePercent}%`}</strong><span>Score</span><span class="sr-only">Percentage of available points earned on scored questions.</span></div>
         </section>
         ${inProgress ? `<section class="home-section" aria-labelledby="home-continue-title"><h2 id="home-continue-title">Continue</h2><a class="home-continue" href="${esc(questionUrl(inProgress, "home"))}"><span>${esc(inProgress.exam)} · Q${inProgress.number}</span><span>${esc(book || "Exam 5")}</span><strong>Resume <span aria-hidden="true">→</span></strong></a></section>` : ""}
         <section class="home-section" aria-labelledby="home-practice-title"><h2 id="home-practice-title">Practice</h2><nav class="home-routes" aria-label="Practice options">
@@ -767,6 +785,13 @@
   }
 
   document.addEventListener("click", event => {
+    const homePeriodButton = event.target.closest("[data-home-period]");
+    if (homePeriodButton) {
+      homePeriod = homePeriodButton.dataset.homePeriod;
+      renderHome();
+      main.querySelector(`[data-home-period="${homePeriod}"]`)?.focus();
+      return;
+    }
     const figureButton = event.target.closest("[data-figure]");
     if (figureButton) {
       const question = questionFor(figureButton.dataset.figure);
