@@ -333,6 +333,9 @@
     else if (section === "question" && questionFor(id)) renderQuestion(questionFor(id));
     else if (section === "attempt") renderAttempt(id);
     else renderHome();
+    const isHome = Boolean(main.querySelector(".home-overview"));
+    main.classList.toggle("home-main", isHome);
+    appShell.classList.toggle("home-active", isHome);
     window.scrollTo(0, 0);
   }
 
@@ -349,35 +352,22 @@
 
   function renderHome() {
     const stats = summaryStats();
-    const inProgress = QUESTIONS.filter(question => hasDraftWork(state.drafts[question.id]));
+    const inProgress = QUESTIONS.find(question => hasDraftWork(state.drafts[question.id]));
+    const book = inProgress && CHAPTER_BY_ID.get(inProgress.chapterIds[0])?.book;
     main.innerHTML = `
-      <header class="desk-heading"><span>CAS EXAM 5 · PAST EXAMS</span><h1>Practice desk</h1></header>
-      <section class="desk-stats" aria-label="Study progress">
-        <div><strong>${stats.completed}<small> / ${QUESTIONS.length}</small></strong><span>Questions scored</span></div>
-        <div><strong>${points(stats.earnedPoints)}</strong><span>Points earned</span></div>
-        <div><strong>${retryQuestions().length}</strong><span>To retry</span></div>
-      </section>
-      <section class="section-head"><h2>Study routes</h2></section>
-      <nav class="study-routes" aria-label="Study routes">
-        <a href="#library" data-library-mode="chapter"><span class="route-index">01</span><span><strong>Study by chapter</strong><small>Browse ratemaking and reserving questions by textbook chapter.</small></span><span class="route-arrow" aria-hidden="true">→</span></a>
-        <a href="#library/exam/${esc(libraryExam)}"><span class="route-index">02</span><span><strong>Past exam in order</strong><small>Choose an exam and work through its questions in sequence.</small></span><span class="route-arrow" aria-hidden="true">→</span></a>
-        <a href="#quiz"><span class="route-index">03</span><span><strong>Random quiz</strong><small>Choose the number of questions, then review solutions at the end.</small></span><span class="route-arrow" aria-hidden="true">→</span></a>
-      </nav>
-      ${inProgress.length ? `<section class="section-head"><div><h2>In progress</h2></div></section><div class="question-list">${inProgress.map(question => questionRow(question, "home")).join("")}</div>` : ""}
-      <section class="section-head"><h2>Progress by chapter</h2></section>
-      <div class="chapter-progress">${["Ratemaking", "Reserving"].map(book => {
-        const chapters = ACTIVE_CHAPTERS.filter(chapter => chapter.book === book);
-        return `<section class="chapter-progress-book" aria-label="${book} chapter progress"><div class="chapter-progress-head"><h3>${book}</h3><span>Questions</span><span>Score</span></div>${chapters.map(chapter => {
-          const questions = chapterQuestions(chapter.id);
-          const scored = questions.map(question => ({ question, attempt: latestAttempt(question.id) })).filter(item => item.attempt);
-          const earnedPoints = scored.reduce((sum, item) => sum + earned(item.attempt), 0);
-          const scoredPoints = scored.reduce((sum, item) => sum + item.question.points, 0);
-          const scorePercent = scoredPoints ? Math.round(earnedPoints / scoredPoints * 100) : null;
-          const label = `Ch. ${chapter.number} · ${chapter.title}`;
-          const description = `${chapterLabel(chapter)}. ${scored.length} of ${questions.length} questions scored. ${scorePercent === null ? "No score yet" : `${scorePercent}% of available points earned on scored questions`}.`;
-          return `<a href="#library/${esc(chapter.id)}" class="chapter-progress-row" aria-label="${esc(description)}"><strong>${esc(label)}</strong><span>${scored.length}/${questions.length}</span><span class="chapter-score"><span class="chapter-score-track" aria-hidden="true"><span style="width:${scorePercent ?? 0}%"></span></span><b>${scorePercent === null ? "—" : `${scorePercent}%`}</b></span></a>`;
-        }).join("")}</section>`;
-      }).join("")}</div>
+      <div class="home-overview">
+        <header class="home-heading"><h1>Overview</h1></header>
+        <section class="home-stats" aria-label="Study progress">
+          <div><strong>${stats.completed}</strong><span>Questions scored</span></div>
+          <a href="#retry"><strong>${retryQuestions().length}</strong><span>To retry</span></a>
+        </section>
+        ${inProgress ? `<section class="home-section" aria-labelledby="home-continue-title"><h2 id="home-continue-title">Continue</h2><a class="home-continue" href="${esc(questionUrl(inProgress, "home"))}"><span>${esc(inProgress.exam)} · Q${inProgress.number}</span><span>${esc(book || "Exam 5")}</span><strong>Resume <span aria-hidden="true">→</span></strong></a></section>` : ""}
+        <section class="home-section" aria-labelledby="home-practice-title"><h2 id="home-practice-title">Practice</h2><nav class="home-routes" aria-label="Practice options">
+          <a href="#library" data-library-mode="chapter"><span class="home-route-number">1</span><span>By chapter</span><span class="home-route-arrow" aria-hidden="true">→</span></a>
+          <a href="#library/exam/${esc(libraryExam)}"><span class="home-route-number">2</span><span>Past exam</span><span class="home-route-arrow" aria-hidden="true">→</span></a>
+          <a href="#quiz"><span class="home-route-number">3</span><span>Random quiz</span><span class="home-route-arrow" aria-hidden="true">→</span></a>
+        </nav></section>
+      </div>
     `;
   }
 
