@@ -1,3 +1,9 @@
+@font-face { font-family: 'DM Serif Display'; src: url('assets/fonts/DMSerifDisplay-Regular.ttf') format('truetype'); font-style: normal; font-weight: 400; font-display: swap; }
+@font-face { font-family: 'DM Serif Display'; src: url('assets/fonts/DMSerifDisplay-Italic.ttf') format('truetype'); font-style: italic; font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Source Serif 4'; src: url('assets/fonts/SourceSerif4-Variable.ttf') format('truetype'); font-style: normal; font-weight: 200 900; font-display: swap; }
+@font-face { font-family: 'Source Serif 4'; src: url('assets/fonts/SourceSerif4-Italic-Variable.ttf') format('truetype'); font-style: italic; font-weight: 200 900; font-display: swap; }
+@font-face { font-family: 'Inter'; src: url('assets/fonts/Inter-Variable.ttf') format('truetype'); font-style: normal; font-weight: 100 900; font-display: swap; }
+@font-face { font-family: 'Inter'; src: url('assets/fonts/Inter-Italic-Variable.ttf') format('truetype'); font-style: italic; font-weight: 100 900; font-display: swap; }
 :root { color-scheme: light; --ink: #202b2a; --muted: #657578; --soft: #f7f6f2; --line: #dce2dc; --navy: #203533; --accent: #d6c579; --green: #315d50; --white: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scrollbar-gutter: stable; }
@@ -52,29 +58,30 @@ h1, h2, h3 { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-se
 .button-outline { border-color: #b8c9c5; background: #fff; color: #214549; }
 .button-outline:hover { background: #f0f4ee; }
 .button:focus-visible { outline: 3px solid #b9ce9e; outline-offset: 2px; }
+.home-active { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
 .home-main { max-width: none; padding-top: 38px; background: #fcfbf7; }
-.home-overview { max-width: 1180px; margin: 0 auto; }
+.home-overview { max-width: 1180px; margin: 0 auto; font-family: 'Source Serif 4', Georgia, serif; }
 .home-heading { border-bottom: 1px solid #9daaa4; padding: 0 0 20px; }
-.home-heading h1, .home-section h2 { font-family: Georgia, 'Times New Roman', serif; color: #183d36; font-weight: 500; }
+.home-heading h1, .home-section h2 { font-family: 'DM Serif Display', Georgia, serif; color: #183d36; font-weight: 400; }
 .home-heading h1 { margin: 0; font-size: clamp(46px, 5vw, 66px); line-height: 1.05; letter-spacing: -.055em; }
 .home-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-bottom: 1px solid #9daaa4; }
 .home-stats > * { display: flex; align-items: center; justify-content: center; gap: 23px; min-height: 120px; }
 .home-stats > * + * { border-left: 1px solid #bdc8c1; }
-.home-stats strong { color: #153d35; font-family: Georgia, 'Times New Roman', serif; font-size: clamp(54px, 6vw, 80px); font-weight: 500; line-height: 1; font-variant-numeric: tabular-nums; }
-.home-stats span { color: #3c5351; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.home-stats strong { color: #153d35; font-family: 'DM Serif Display', Georgia, serif; font-size: clamp(54px, 6vw, 80px); font-weight: 400; line-height: 1; font-variant-numeric: tabular-nums; }
+.home-stats span { color: #3c5351; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
 .home-stats a:hover, .home-stats a:focus-visible { background: #eef4ed; }
 .home-stats a:focus-visible, .home-continue:focus-visible, .home-routes a:focus-visible { outline: 2px solid #47745e; outline-offset: -2px; }
 .home-section { margin-top: 32px; }
 .home-section h2 { margin: 0 0 13px; font-size: 30px; line-height: 1.2; letter-spacing: -.035em; }
-.home-continue { display: grid; grid-template-columns: 1fr 1fr auto; align-items: center; gap: 25px; min-height: 74px; padding: 12px 20px; border-top: 1px solid #b7c3bc; border-bottom: 1px solid #b7c3bc; color: #263b39; font-family: Georgia, 'Times New Roman', serif; font-size: 19px; }
+.home-continue { display: grid; grid-template-columns: 1fr 1fr auto; align-items: center; gap: 25px; min-height: 74px; padding: 12px 20px; border-top: 1px solid #b7c3bc; border-bottom: 1px solid #b7c3bc; color: #263b39; font-size: 19px; }
 .home-continue > span + span { border-left: 1px solid #c7d0c9; padding-left: 25px; }
-.home-continue strong { color: #225b4a; font-size: 18px; font-weight: 500; white-space: nowrap; }
-.home-continue strong span { margin-left: 15px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+.home-continue strong { color: #225b4a; font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 600; white-space: nowrap; }
+.home-continue strong span { margin-left: 15px; }
 .home-continue:hover, .home-routes a:hover { background: #eef4ed; }
 .home-routes { border-top: 1px solid #b7c3bc; }
-.home-routes a { display: grid; grid-template-columns: 60px 1fr 32px; align-items: center; gap: 22px; min-height: 70px; padding: 8px 20px; border-bottom: 1px solid #cbd5ce; color: #263b39; font-family: Georgia, 'Times New Roman', serif; font-size: 21px; }
-.home-route-number { color: #17483c; font-size: 44px; line-height: 1; }
-.home-route-arrow { color: #1b5a49; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 29px; text-align: right; }
+.home-routes a { display: grid; grid-template-columns: 60px 1fr 32px; align-items: center; gap: 22px; min-height: 70px; padding: 8px 20px; border-bottom: 1px solid #cbd5ce; color: #263b39; font-size: 21px; }
+.home-route-number { color: #17483c; font-family: 'DM Serif Display', Georgia, serif; font-size: 44px; line-height: 1; }
+.home-route-arrow { color: #1b5a49; font-family: 'Inter', sans-serif; font-size: 29px; text-align: right; }
 .section-head { display: flex; justify-content: space-between; align-items: flex-end; margin: 34px 0 13px; }
 .section-head h2 { font-size: 20px; margin: 0; }
 .page-heading { margin: 8px 0 29px; }
