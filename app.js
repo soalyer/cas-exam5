@@ -339,12 +339,13 @@
     const isHome = Boolean(main.querySelector(".home-overview"));
     main.classList.toggle("home-main", isHome);
     main.classList.toggle("folio-main", Boolean(main.querySelector(".paper-card")));
+    main.classList.toggle("index-main", !isHome && !main.classList.contains("folio-main"));
     appShell.classList.toggle("home-active", isHome);
     window.scrollTo(0, 0);
   }
 
-  function pageHeader(eyebrow, title, description = "") {
-    return `<div class="page-heading"><div class="eyebrow">${esc(eyebrow)}</div><h1>${esc(title)}</h1>${description ? `<p>${esc(description)}</p>` : ""}</div>`;
+  function pageHeader(_eyebrow, title, description = "") {
+    return `<header class="page-heading"><h1>${esc(title)}</h1>${description ? `<p>${esc(description)}</p>` : ""}</header>`;
   }
 
   function summaryStats(period) {
@@ -395,8 +396,8 @@
     const attempt = latestAttempt(question.id);
     const draft = state.drafts[question.id];
     const hasWork = hasDraftWork(draft);
-    const status = hasWork ? "In progress" : attempt ? `${points(earned(attempt))} / ${points(question.points)} pts` : "Not started";
-    return `<a class="question-row" href="${esc(questionUrl(question, source))}"><span class="question-index">${String(question.number).padStart(2, "0")}</span><span class="question-details"><strong>${esc(questionTitle(question))}</strong>${chapterTags(question)}<small>${question.parts.length} ${question.parts.length === 1 ? "part" : "parts"}</small></span><span class="question-points">${points(question.points)} pts</span><span class="status-pill ${hasWork ? "status-active" : ""}">${esc(status)}</span><span class="row-arrow">→</span></a>`;
+    const status = hasWork ? "In progress" : attempt ? `${points(earned(attempt))} / ${points(question.points)} pts` : "";
+    return `<a class="question-row ${attempt && !hasWork ? "is-scored" : ""}" href="${esc(questionUrl(question, source))}"><span class="question-details"><strong>${esc(questionTitle(question))}</strong>${chapterTags(question)}</span><span class="question-points">${points(question.points)} pts</span><span class="status-pill ${hasWork ? "status-active" : ""}">${esc(status)}</span><span class="row-arrow">→</span></a>`;
   }
 
   function renderChapterFilter() {
@@ -406,16 +407,15 @@
       return `<optgroup label="${book === "Ratemaking" ? "Ratemaking — Werner & Modlin" : "Reserving — Friedland"}"><option value="${key}" ${libraryChapter === key ? "selected" : ""}>All ${book.toLowerCase()} chapters (${questionsForChapterFilter(key).length})</option>${chapters.map(chapter => `<option value="${esc(chapter.id)}" ${libraryChapter === chapter.id ? "selected" : ""}>Ch. ${chapter.number}: ${esc(chapter.title)} (${chapterQuestions(chapter.id).length})</option>`).join("")}</optgroup>`;
     }).join("");
     const selectedChapter = CHAPTER_BY_ID.get(libraryChapter);
-    return `<div class="chapter-filter"><label for="chapter-filter">TEXTBOOK CHAPTER</label><select id="chapter-filter"><option value="all" ${libraryChapter === "all" ? "selected" : ""}>All available chapters (${QUESTIONS.length} questions)</option>${groups}</select>${selectedChapter ? `<a href="${esc(selectedChapter.file)}#page=${selectedChapter.page}" target="_blank" rel="noopener">Read this chapter ↗</a>` : ""}</div>`;
+    return `<div class="chapter-filter"><label for="chapter-filter">Chapter</label><select id="chapter-filter"><option value="all" ${libraryChapter === "all" ? "selected" : ""}>All available chapters (${QUESTIONS.length} questions)</option>${groups}</select>${selectedChapter ? `<a href="${esc(selectedChapter.file)}#page=${selectedChapter.page}" target="_blank" rel="noopener">Read this chapter ↗</a>` : ""}</div>`;
   }
 
   function renderLibrary() {
-    const selectedExam = EXAM_BY_ID.get(libraryExam);
     const visible = libraryMode === "exam" ? QUESTIONS.filter(question => question.examId === libraryExam) : questionsForChapterFilter(libraryChapter);
     main.innerHTML = `
-      ${pageHeader("QUESTION LIBRARY", "Choose your next question")}
-      <div class="library-toolbar"><div class="segmented" role="group" aria-label="Study mode"><button type="button" data-mode="chapter" class="${libraryMode === "chapter" ? "selected" : ""}">By chapter</button><button type="button" data-mode="exam" class="${libraryMode === "exam" ? "selected" : ""}">Past exam in order</button></div><span class="library-count">${visible.length} ${visible.length === 1 ? "QUESTION" : "QUESTIONS"}</span></div>
-      ${libraryMode === "chapter" ? renderChapterFilter() : `<div class="exam-filter"><label for="exam-filter">Exam</label><select id="exam-filter">${EXAMS.map(exam => `<option value="${esc(exam.id)}" ${exam.id === libraryExam ? "selected" : ""}>${esc(exam.label)} (${exam.questions.length} questions)</option>`).join("")}</select><span>01—${String(selectedExam.questions.length).padStart(2, "0")}</span></div>`}
+      ${pageHeader("QUESTION LIBRARY", "Question library")}
+      <div class="library-toolbar"><div class="segmented" role="group" aria-label="Study mode"><button type="button" data-mode="chapter" class="${libraryMode === "chapter" ? "selected" : ""}">By chapter</button><button type="button" data-mode="exam" class="${libraryMode === "exam" ? "selected" : ""}">Past exam</button></div><span class="library-count">${visible.length} ${visible.length === 1 ? "question" : "questions"}</span></div>
+      ${libraryMode === "chapter" ? renderChapterFilter() : `<div class="exam-filter"><label for="exam-filter">Exam</label><select id="exam-filter">${EXAMS.map(exam => `<option value="${esc(exam.id)}" ${exam.id === libraryExam ? "selected" : ""}>${esc(exam.label)} (${exam.questions.length} questions)</option>`).join("")}</select></div>`}
       <div class="question-list">${visible.map(question => questionRow(question, libraryMode === "exam" ? `library/exam/${libraryExam}` : libraryChapter === "all" ? "library" : `library/${libraryChapter}`)).join("")}</div>
     `;
   }
@@ -423,7 +423,7 @@
   function renderRetry() {
     const questions = retryQuestions();
     main.innerHTML = `${pageHeader("REVIEW CYCLE", "Retry queue")}
-      ${questions.length ? `<div class="question-list">${questions.map(question => questionRow(question, "retry")).join("")}</div>` : `<div class="empty-state"><span>↻</span><h2>Nothing to retry yet</h2><p>Score a question after reviewing its solution. Questions below full points will appear here.</p><a class="button button-dark" href="#library">Browse questions →</a></div>`}`;
+      ${questions.length ? `<div class="question-list">${questions.map(question => questionRow(question, "retry")).join("")}</div>` : `<div class="empty-state"><h2>Nothing to retry yet</h2><p>Questions scored below full points will appear here.</p><a class="button button-dark" href="#library">Browse questions →</a></div>`}`;
   }
 
   function renderHistory() {
@@ -433,8 +433,8 @@
       ${state.attempts.length ? `${quizzes.length ? `<section class="section-head"><h2>Question attempts</h2></section>` : ""}<div class="history-list">${state.attempts.map(attempt => {
         const question = questionFor(attempt.questionId);
         if (!question) return "";
-        return `<a href="#attempt/${esc(attempt.id)}" class="history-row"><span class="history-number">Q${question.number}</span><span><strong>${esc(questionTitle(question))}</strong>${chapterTags(question)}<small>${dateLabel(attempt.completedAt)} · ${duration(attempt.elapsedSec)} spent${attempt.quizId ? " · Quiz" : ""}</small></span><span class="history-score">${points(earned(attempt))} / ${points(question.points)} <small>pts</small></span><span class="row-arrow">→</span></a>`;
-      }).join("")}</div>` : `<div class="empty-state"><span>◷</span><h2>No scored attempts yet</h2><p>Complete and score a question to see it here.</p><a class="button button-dark" href="#library">Browse questions →</a></div>`}`;
+        return `<a href="#attempt/${esc(attempt.id)}" class="history-row"><span class="history-details"><strong>${esc(questionTitle(question))}</strong>${chapterTags(question)}<small>${dateLabel(attempt.completedAt)} · ${duration(attempt.elapsedSec)} spent${attempt.quizId ? " · Quiz" : ""}</small></span><span class="history-score">${points(earned(attempt))} / ${points(question.points)} <small>pts</small></span><span class="row-arrow">→</span></a>`;
+      }).join("")}</div>` : `<div class="empty-state"><h2>No scored attempts yet</h2><p>Complete and score a question to see it here.</p><a class="button button-dark" href="#library">Browse questions →</a></div>`}`;
   }
 
   function sourceLink(question, page, label) {
@@ -590,7 +590,7 @@
 
   function renderQuizHub() {
     const open = state.quizSessions.filter(session => session.status !== "completed");
-    main.innerHTML = `${pageHeader("QUIZ MODE", "Build a random quiz")}
+    main.innerHTML = `${pageHeader("QUIZ MODE", "Quiz mode")}
       <section class="quiz-setup"><label for="quiz-exam">Questions from</label><select id="quiz-exam" class="quiz-exam-select"><option value="all">All exams (${QUIZ_QUESTIONS.length})</option>${EXAMS.map(exam => `<option value="${esc(exam.id)}">${esc(exam.label)} (${exam.questions.filter(question => !question.excludedFromOfficialScore).length})</option>`).join("")}</select><label for="quiz-count" class="quiz-count-label">Number of questions</label><div class="quiz-setup-row"><input id="quiz-count" type="number" min="1" max="${QUIZ_QUESTIONS.length}" step="1" inputmode="numeric" value="5" /><span id="quiz-range">1–${QUIZ_QUESTIONS.length}</span><button class="button button-dark" type="button" data-quiz-action="start">Start quiz →</button></div></section>
       ${open.length ? `<section class="section-head"><h2>Continue a quiz</h2></section><div class="quiz-list">${open.map(session => `<div class="quiz-list-item"><a class="quiz-list-row" href="${session.status === "active" ? quizUrl(session, "q", session.currentIndex || 0) : quizUrl(session, "review", 0)}"><span><strong>${questionCount(session.questionIds.length)} · ${esc(quizExamLabel(session))}</strong><small>${session.status === "active" ? `${session.questionIds.filter(id => quizAnswered(session, id)).length} answered` : "Ready to score"} · Started ${dateLabel(session.createdAt)}</small></span><b>${session.status === "active" ? "Resume →" : "Review →"}</b></a><button class="quiz-discard" type="button" data-quiz-action="discard" data-quiz-id="${esc(session.id)}">Discard</button></div>`).join("")}</div>` : ""}`;
   }
@@ -656,7 +656,7 @@
   function renderQuizFinish(session) {
     const answered = session.questionIds.filter(id => quizAnswered(session, id)).length;
     main.innerHTML = `${pageHeader("QUIZ MODE", "Finish quiz")}
-      <section class="quiz-summary"><strong>${answered} of ${questionCount(session.questionIds.length)} answered</strong><p>Submitting reveals the solutions and ends the answering phase. You can leave unanswered questions blank.</p><div class="quiz-actions"><a class="button button-outline" href="${quizUrl(session, "q", session.currentIndex || 0)}">Keep answering</a><button class="button button-dark" type="button" data-quiz-action="submit" data-quiz-id="${esc(session.id)}">Submit quiz →</button></div></section>
+      <section class="quiz-summary"><strong>${answered} <span>of ${session.questionIds.length} answered</span></strong><p>Submitting reveals the solutions. Unanswered questions can stay blank.</p><div class="quiz-actions"><a class="button button-outline" href="${quizUrl(session, "q", session.currentIndex || 0)}">Keep answering</a><button class="button button-dark" type="button" data-quiz-action="submit" data-quiz-id="${esc(session.id)}">Submit quiz →</button></div></section>
       <div class="quiz-list">${session.questionIds.map((id, index) => `<a class="quiz-list-row" href="${quizUrl(session, "q", index)}"><span><strong>Question ${index + 1} · ${esc(questionFor(id)?.exam || "")} Q${questionFor(id)?.number || ""}</strong><small>${quizAnswered(session, id) ? "Answered" : "No answer entered"}</small></span><b>Review →</b></a>`).join("")}</div>`;
   }
 
@@ -722,7 +722,7 @@
     const earnedPoints = quizScore(session);
     const maxPoints = quizMaxPoints(session);
     main.innerHTML = `${pageHeader("QUIZ COMPLETE", "Quiz results")}
-      <section class="quiz-summary"><strong>${points(earnedPoints)} / ${points(maxPoints)} points</strong><p>${questionCount(session.questionIds.length)} · ${esc(quizExamLabel(session))} · ${duration(session.elapsedSec)} spent · Completed ${dateLabel(session.completedAt)}</p><div class="quiz-actions"><a class="button button-outline" href="#history">Attempt history</a><a class="button button-dark" href="#quiz">Start another quiz →</a></div></section>
+      <section class="quiz-summary"><strong>${points(earnedPoints)} <span>/ ${points(maxPoints)} points</span></strong><p>${questionCount(session.questionIds.length)} · ${esc(quizExamLabel(session))} · ${duration(session.elapsedSec)} spent · ${dateLabel(session.completedAt)}</p><div class="quiz-actions"><a class="button button-outline" href="#history">Attempt history</a><a class="button button-dark" href="#quiz">Start another quiz →</a></div></section>
       <div class="quiz-list">${session.questionIds.map((id, index) => { const question = questionFor(id); const score = Object.values(quizResponse(session, id).scores).reduce((sum, value) => sum + Number(value || 0), 0); return `<a class="quiz-list-row" href="${quizUrl(session, "review", index)}"><span><strong>Question ${index + 1} · ${esc(question.exam)} Q${question.number}</strong><small>${points(score)} / ${points(question.points)} points</small></span><b>Review →</b></a>`; }).join("")}</div>`;
   }
 
@@ -730,7 +730,7 @@
     const navigation = questionNavigation(question);
     const latest = latestAttempt(question.id);
     if (latest && !state.drafts[question.id]) {
-      main.innerHTML = `${questionHeader(question, navigation)}<div class="completed-panel"><div class="completed-symbol">✓</div><div class="eyebrow">LATEST ATTEMPT</div><h2>${points(earned(latest))} <span>/ ${points(question.points)} points</span></h2><p>Scored ${dateLabel(latest.completedAt)}. Your answer and the reference solution are saved in attempt history.</p><div class="completed-actions"><a class="button button-dark" href="#attempt/${esc(latest.id)}">Review last attempt</a><button class="button button-outline" type="button" data-action="new-attempt" data-question="${esc(question.id)}">Try this question again</button></div></div>${renderPrompt(question)}`;
+      main.innerHTML = `${questionHeader(question, navigation)}<div class="completed-panel"><div><span class="completed-label">Last score · ${dateLabel(latest.completedAt)}</span><h2>${points(earned(latest))} <span>/ ${points(question.points)} points</span></h2></div><div class="completed-actions"><a class="button button-dark" href="#attempt/${esc(latest.id)}">Review attempt →</a><button class="button button-outline" type="button" data-action="new-attempt" data-question="${esc(question.id)}">Try again</button></div></div>${renderPrompt(question)}`;
       return;
     }
     const draft = ensureDraft(question);
