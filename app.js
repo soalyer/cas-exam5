@@ -40,8 +40,9 @@
   function setSidebarHidden(hidden, persist = false) {
     appShell.classList.toggle("sidebar-collapsed", hidden);
     sidebarToggle.setAttribute("aria-expanded", String(!hidden));
-    sidebarToggle.querySelector(".sidebar-toggle-icon").textContent = hidden ? "☰" : "←";
-    sidebarToggle.querySelector(".sidebar-toggle-label").textContent = hidden ? "Show sidebar" : "Hide sidebar";
+    sidebarToggle.querySelector(".sidebar-toggle-icon").textContent = hidden ? "→" : "←";
+    sidebarToggle.setAttribute("aria-label", hidden ? "Show sidebar" : "Hide sidebar");
+    sidebarToggle.title = hidden ? "Show sidebar" : "Hide sidebar";
     if (persist) {
       try { localStorage.setItem(SIDEBAR_KEY, String(hidden)); } catch { /* The toggle still works for this visit. */ }
     }
@@ -369,7 +370,6 @@
   function renderHome() {
     const stats = summaryStats(homePeriod);
     const inProgress = QUESTIONS.find(question => hasDraftWork(state.drafts[question.id]));
-    const book = inProgress && CHAPTER_BY_ID.get(inProgress.chapterIds[0])?.book;
     main.innerHTML = `
       <div class="home-overview">
         <header class="home-heading"><h1>Overview</h1><div class="home-periods" role="group" aria-label="Score period">
@@ -379,7 +379,7 @@
           <div><strong>${stats.completed}</strong><span>Questions scored</span></div>
           <div><strong>${stats.scorePercent === null ? "—" : `${stats.scorePercent}%`}</strong><span>Score</span><span class="sr-only">Percentage of available points earned on scored questions.</span></div>
         </section>
-        ${inProgress ? `<section class="home-section" aria-labelledby="home-continue-title"><h2 id="home-continue-title">Continue</h2><a class="home-continue" href="${esc(questionUrl(inProgress, "home"))}"><span>${esc(inProgress.exam)} · Q${inProgress.number}</span><span>${esc(book || "Exam 5")}</span><strong>Resume <span aria-hidden="true">→</span></strong></a></section>` : ""}
+        ${inProgress ? `<section class="home-section" aria-labelledby="home-continue-title"><h2 id="home-continue-title">Continue</h2><a class="home-continue" href="${esc(questionUrl(inProgress, "home"))}"><span>${esc(inProgress.exam)} · Q${inProgress.number}</span><strong>Resume <span aria-hidden="true">→</span></strong></a></section>` : ""}
         <section class="home-section" aria-labelledby="home-practice-title"><h2 id="home-practice-title">Practice</h2><nav class="home-routes" aria-label="Practice options">
           <a href="#library" data-library-mode="chapter"><span class="home-route-number">1</span><span>By chapter</span><span class="home-route-arrow" aria-hidden="true">→</span></a>
           <a href="#library/exam/${esc(libraryExam)}"><span class="home-route-number">2</span><span>Past exam</span><span class="home-route-arrow" aria-hidden="true">→</span></a>

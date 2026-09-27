@@ -34,15 +34,12 @@ a { color: inherit; text-decoration: none; }
 .sidebar-link { display: block; width: 100%; padding: 10px 12px; background: transparent; border: 0; color: #c4d4d0; text-align: left; font-size: 12px; border-radius: 3px; }
 .sidebar-link:hover { background: #254046; }
 .main-column { min-width: 0; }
-.topbar { height: 62px; padding: 0 56px; display: flex; align-items: center; justify-content: space-between; background: #fbfbf8; border-bottom: 1px solid var(--line); }
-.home-active .topbar { height: 46px; background: #fcfbf7; }
-.topbar-left { display: flex; align-items: center; gap: 21px; min-width: 0; }
-.sidebar-toggle { display: inline-flex; align-items: center; justify-content: center; gap: 8px; flex: 0 0 auto; padding: 8px 11px; border: 1px solid #dce7df; border-radius: 3px; background: #f8fbf7; color: #315c4c; font-size: 11px; font-weight: 700; }
-.sidebar-toggle:hover { background: #edf5ed; }
+.sidebar-toggle { position: fixed; z-index: 5; top: 28px; left: 232px; display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 1px solid #b9cbc0; border-radius: 3px; background: #fcfbf7; color: #315c4c; }
+.sidebar-collapsed .sidebar-toggle { left: 14px; }
+.sidebar-collapsed main { padding-left: 56px; }
+.sidebar-toggle:hover { border-color: #6e9a80; background: #edf5ed; }
 .sidebar-toggle:focus-visible { outline: 3px solid #a2c684; outline-offset: 2px; }
-.sidebar-toggle-icon { font-size: 15px; line-height: 1; }
-.topbar-label { color: #647d79; font-size: 10px; font-weight: 700; letter-spacing: 1.8px; display: flex; align-items: center; gap: 9px; }
-.live-dot { width: 7px; height: 7px; border-radius: 50%; background: #72a585; box-shadow: 0 0 0 4px #e7f2e8; }
+.sidebar-toggle-icon { font-family: 'Inter', sans-serif; font-size: 20px; line-height: 1; }
 main { max-width: 1500px; margin: 0 auto; padding: 38px 56px 80px; }
 h1, h2, h3, p { margin-top: 0; }
 h1, h2, h3 { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; letter-spacing: -.035em; }
@@ -77,8 +74,7 @@ h1, h2, h3 { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-se
 .home-continue:focus-visible, .home-routes a:focus-visible { outline: 2px solid #47745e; outline-offset: -2px; }
 .home-section { margin-top: 32px; }
 .home-section h2 { margin: 0 0 13px; font-size: 30px; line-height: 1.2; letter-spacing: -.035em; }
-.home-continue { display: grid; grid-template-columns: 1fr 1fr auto; align-items: center; gap: 25px; min-height: 74px; padding: 12px 20px; border-top: 1px solid #b7c3bc; border-bottom: 1px solid #b7c3bc; color: #263b39; font-size: 19px; }
-.home-continue > span + span { border-left: 1px solid #c7d0c9; padding-left: 25px; }
+.home-continue { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 25px; min-height: 74px; padding: 12px 20px; border-top: 1px solid #b7c3bc; border-bottom: 1px solid #b7c3bc; color: #263b39; font-size: 19px; }
 .home-continue strong { color: #225b4a; font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 600; white-space: nowrap; }
 .home-continue strong span { margin-left: 15px; }
 .home-continue:hover, .home-routes a:hover { background: #eef4ed; }
@@ -286,8 +282,8 @@ td:not(:first-child), th:not(:first-child) { text-align: right; }
 .toast { position: fixed; right: 25px; bottom: 25px; z-index: 10; border-radius: 9px; background: #203e3c; color: #fff; box-shadow: 0 12px 35px rgba(11,37,34,.2); padding: 12px 16px; font-size: 12px; opacity: 0; transform: translateY(15px); pointer-events: none; transition: opacity .2s ease, transform .2s ease; }
 .toast.visible { opacity: 1; transform: translateY(0); }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; white-space: nowrap; }
-@media (max-width: 1150px) { .app-shell { grid-template-columns: 215px minmax(0,1fr); } .topbar { padding: 0 30px; } main { padding: 35px 30px 70px; } .practice-layout { gap: 8px; } .paper-body { padding: 20px; } }
-@media (max-width: 850px) { .app-shell { display: block; } .sidebar { height: auto; position: static; padding: 13px 18px; } .brand { padding: 0 0 10px; } .sidebar-rule, .sidebar-label, .source-badge { display: none; } .primary-nav { display: flex; gap: 4px; overflow-x: auto; } .primary-nav button { width: auto; flex: 0 0 auto; padding: 10px 12px; font-size: 11px; } .sidebar-bottom { margin: 7px 0 0; padding: 0; display: flex; gap: 5px; } .sidebar-link { width: auto; padding: 7px 10px; font-size: 10px; } .topbar { height: 46px; padding: 0 20px; } .sidebar-toggle { padding: 6px 9px; } .practice-layout { grid-template-columns: 1fr !important; } .pane-divider { display: none; } main { padding: 25px 20px 65px; } }
-@media (max-width: 700px) { .home-main { padding-top: 32px; } .home-stats > * { min-height: 125px; } .home-stats strong { font-size: 53px; } .home-continue { grid-template-columns: 1fr auto; gap: 5px 14px; font-size: 16px; } .home-continue > span + span { grid-column: 1; grid-row: 2; border: 0; padding: 0; color: #667a70; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; } .home-continue strong { grid-column: 2; grid-row: 1 / 3; } }
-@media (max-width: 580px) { .topbar-label { display: none; } .home-heading h1 { font-size: 48px; } .home-periods { width: 100%; gap: 18px; } .home-stats > * { min-height: 115px; } .home-stats span:not(.sr-only) { font-size: 15px; } .home-section { margin-top: 34px; } .home-routes a { grid-template-columns: 35px 1fr 26px; gap: 12px; min-height: 70px; padding: 8px 9px; font-size: 18px; } .home-route-number { font-size: 36px; } .home-route-arrow { font-size: 24px; } .question-row { gap: 9px; padding: 15px 13px; flex-wrap: wrap; } .question-details { min-width: 180px; } .question-points { display: none; } .status-pill { margin-left: 51px; } .row-arrow { margin-left: auto; } .practice-heading { gap: 10px; } .practice-heading h1 { font-size: 25px; } .paper-bottom { flex-wrap: wrap; } .reveal-card, .review-actions, .completed-actions { flex-direction: column; align-items: stretch; } .library-toolbar { align-items: flex-start; } .library-count { display: none; } .quiz-list-item { flex-wrap: wrap; } .quiz-discard { margin: 0 16px 12px auto; } }
+@media (max-width: 1150px) { .app-shell { grid-template-columns: 215px minmax(0,1fr); } .sidebar-toggle { left: 199px; } .sidebar-collapsed .sidebar-toggle { left: 14px; } main { padding: 35px 30px 70px; } .practice-layout { gap: 8px; } .paper-body { padding: 20px; } }
+@media (max-width: 850px) { .app-shell { display: block; } .sidebar { height: auto; position: static; padding: 13px 18px; } .brand { padding: 0 0 10px; } .sidebar-rule, .sidebar-label, .source-badge { display: none; } .primary-nav { display: flex; gap: 4px; overflow-x: auto; } .primary-nav button { width: auto; flex: 0 0 auto; padding: 10px 12px; font-size: 11px; } .sidebar-bottom { margin: 7px 0 0; padding: 0; display: flex; gap: 5px; } .sidebar-link { width: auto; padding: 7px 10px; font-size: 10px; } .sidebar-toggle { top: 16px; left: auto; right: 14px; } .sidebar-collapsed .sidebar-toggle { left: 14px; right: auto; } .practice-layout { grid-template-columns: 1fr !important; } .pane-divider { display: none; } main { padding: 25px 20px 65px; } }
+@media (max-width: 700px) { .home-main { padding-top: 32px; } .home-stats > * { min-height: 125px; } .home-stats strong { font-size: 53px; } .home-continue { gap: 14px; font-size: 16px; } }
+@media (max-width: 580px) { .home-heading h1 { font-size: 48px; } .home-periods { width: 100%; gap: 18px; } .home-stats > * { min-height: 115px; } .home-stats span:not(.sr-only) { font-size: 15px; } .home-section { margin-top: 34px; } .home-routes a { grid-template-columns: 35px 1fr 26px; gap: 12px; min-height: 70px; padding: 8px 9px; font-size: 18px; } .home-route-number { font-size: 36px; } .home-route-arrow { font-size: 24px; } .question-row { gap: 9px; padding: 15px 13px; flex-wrap: wrap; } .question-details { min-width: 180px; } .question-points { display: none; } .status-pill { margin-left: 51px; } .row-arrow { margin-left: auto; } .practice-heading { gap: 10px; } .practice-heading h1 { font-size: 25px; } .paper-bottom { flex-wrap: wrap; } .reveal-card, .review-actions, .completed-actions { flex-direction: column; align-items: stretch; } .library-toolbar { align-items: flex-start; } .library-count { display: none; } .quiz-list-item { flex-wrap: wrap; } .quiz-discard { margin: 0 16px 12px auto; } }
 @media (max-width: 580px) { .chapter-filter select { width: 100%; min-width: 0; } }
