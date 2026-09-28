@@ -163,7 +163,8 @@ table('spring-2013',4,14,17,range(15,18),'EF','Selected Ultimate Loss Ratios',['
 table('spring-2013',5,19,21,range(20,22),'BC','Earned Premium ($000)',['Calendar year ending','Earned premium ($000)'])
 table('spring-2013',7,16,19,range(17,20),'BC','Ultimate Losses at Pre-July 2011 Benefit Levels ($000)',['Accident year','Ultimate losses ($000)'])
 table('spring-2013',8,10,13,range(11,14),'BC','Reported Loss and ALAE as of June 30, 2012',['Accident year','Reported loss and ALAE ($)'])
-table('spring-2013',8,19,32,range(21,33),'BCDEGHIJ','Loss Trend Data',['Calendar year ending','Frequency','Severity ($)','Pure premium ($)','# of points','Annual frequency exponential fit','Annual severity exponential fit','Annual pure premium exponential fit'])
+table('spring-2013',8,19,32,range(21,33),'BCDE','Reported Loss & ALAE',['Calendar year ending','Frequency','Severity ($)','Pure premium ($)'])
+table('spring-2013',8,19,24,range(21,25),'GHIJ','Annual Exponential Fits',['# of points','Annual frequency exponential fit','Annual severity exponential fit','Annual pure premium exponential fit'])
 table('spring-2013',19,6,10,range(8,11),'BCDE','Reported Claim Counts and Severities as of December 31, 2012',['Accident year','Claim counts','Severity ($)','Payroll ($000)'])
 table('spring-2013',19,12,16,range(14,17),'BCD','Reporting Patterns',['As of months','Claim counts','Severities'])
 for start,title in [(11,'Cumulative Paid Claims ($000s)'),(17,'Cumulative Reported Claims ($000s)'),(23,'Outstanding Claims ($000s)')]:
