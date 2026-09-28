@@ -473,8 +473,7 @@
         <div><strong>${attempts.length}</strong><span>Attempts saved</span></div>
         <div><strong>${esc(recordedTime(seconds))}</strong><span>Recorded work time</span></div>
       </section>
-      <p class="performance-method">Scores use the latest scored attempt for each question in the selected period.</p>
-      <section class="performance-section" aria-labelledby="chapter-performance-title"><div class="performance-section-heading"><h2 id="chapter-performance-title">By chapter</h2><p>Coverage shows scored questions. Score uses available points on those questions.</p></div>
+      <section class="performance-section" aria-labelledby="chapter-performance-title"><div class="performance-section-heading"><h2 id="chapter-performance-title">By chapter</h2></div>
         <div class="performance-chapter-head" aria-hidden="true"><span>Chapter</span><span>Scored / available</span><span>Score</span><span></span></div>
         <h3>Ratemaking</h3><div class="performance-chapter-list">${chapters("Ratemaking")}</div>
         <h3>Reserving</h3><div class="performance-chapter-list">${chapters("Reserving")}</div>
