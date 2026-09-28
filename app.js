@@ -25,6 +25,7 @@
   let libraryMode = "chapter";
   let libraryExam = EXAMS[0].id;
   let homePeriod = "all";
+  let performancePeriod = "all";
   let toastTimer;
   let paneRatio = 0.62;
   let paneResizeObserver;
@@ -332,6 +333,7 @@
     }
     else if (section === "retry") renderRetry();
     else if (section === "history") renderHistory();
+    else if (section === "performance") renderPerformance();
     else if (section === "quiz") renderQuizRoute(id, view, index);
     else if (section === "question" && questionFor(id)) renderQuestion(questionFor(id));
     else if (section === "attempt") renderAttempt(id);
@@ -348,19 +350,25 @@
     return `<header class="page-heading"><h1>${esc(title)}</h1>${description ? `<p>${esc(description)}</p>` : ""}</header>`;
   }
 
-  function summaryStats(period) {
+  function periodStart(period) {
+    if (period === "all") return null;
     const start = new Date();
     if (period === "today") start.setHours(0, 0, 0, 0);
-    if (period === "week") {
+    else {
       start.setDate(start.getDate() - (start.getDay() + 6) % 7);
       start.setHours(0, 0, 0, 0);
     }
+    return start;
+  }
+
+  function summaryStats(period) {
+    const start = periodStart(period);
     const latest = new Map();
     state.attempts.forEach(attempt => {
       const question = QUESTION_BY_ID.get(attempt.questionId);
       if (!question) return;
       const completedAt = new Date(attempt.completedAt).getTime();
-      if (period !== "all" && (!Number.isFinite(completedAt) || completedAt < start.getTime())) return;
+      if (start && (!Number.isFinite(completedAt) || completedAt < start.getTime())) return;
       const previous = latest.get(question.id);
       if (!previous || completedAt > previous.completedAt) latest.set(question.id, { question, attempt, completedAt });
     });
@@ -368,6 +376,115 @@
     const earnedPoints = scored.reduce((sum, item) => sum + earned(item.attempt), 0);
     const availablePoints = scored.reduce((sum, item) => sum + item.question.points, 0);
     return { completed: scored.length, scorePercent: availablePoints ? Math.round(earnedPoints / availablePoints * 100) : null };
+  }
+
+  function scoredAttemptsInPeriod(period) {
+    const start = periodStart(period)?.getTime() ?? -Infinity;
+    return state.attempts.filter(attempt => {
+      const completedAt = new Date(attempt.completedAt).getTime();
+      return QUESTION_BY_ID.has(attempt.questionId) && attempt.scores && Number.isFinite(completedAt) && completedAt >= start;
+    });
+  }
+
+  function latestScoredEntries(attempts) {
+    const latest = new Map();
+    attempts.forEach(attempt => {
+      const question = QUESTION_BY_ID.get(attempt.questionId);
+      const completedAt = new Date(attempt.completedAt).getTime();
+      const previous = latest.get(question.id);
+      if (!previous || completedAt > previous.completedAt) latest.set(question.id, { question, attempt, completedAt });
+    });
+    return [...latest.values()];
+  }
+
+  function scorePercentage(entries) {
+    const possible = entries.reduce((total, entry) => total + entry.question.points, 0);
+    const earnedPoints = entries.reduce((total, entry) => total + earned(entry.attempt), 0);
+    return possible ? Math.round(earnedPoints / possible * 100) : null;
+  }
+
+  function recordedTime(seconds) {
+    if (seconds > 0 && seconds < 60) return "<1m";
+    const minutes = Math.round(seconds / 60);
+    if (minutes < 60) return `${minutes}m`;
+    return `${Math.floor(minutes / 60)}h ${String(minutes % 60).padStart(2, "0")}m`;
+  }
+
+  function repeatPerformance(attempts) {
+    const byQuestion = new Map();
+    attempts.forEach(attempt => {
+      if (!byQuestion.has(attempt.questionId)) byQuestion.set(attempt.questionId, []);
+      byQuestion.get(attempt.questionId).push(attempt);
+    });
+    let firstEarned = 0;
+    let latestEarned = 0;
+    let possible = 0;
+    let count = 0;
+    byQuestion.forEach((items, id) => {
+      if (items.length < 2) return;
+      items.sort((a, b) => new Date(a.completedAt) - new Date(b.completedAt));
+      firstEarned += earned(items[0]);
+      latestEarned += earned(items[items.length - 1]);
+      possible += QUESTION_BY_ID.get(id).points;
+      count += 1;
+    });
+    return { count, change: count >= 3 && possible ? Math.round((latestEarned - firstEarned) / possible * 100) : null };
+  }
+
+  function weeklyPerformance() {
+    const first = periodStart("week");
+    first.setDate(first.getDate() - 7 * 7);
+    const allAttempts = scoredAttemptsInPeriod("all");
+    return Array.from({ length: 8 }, (_, index) => {
+      const start = new Date(first);
+      start.setDate(start.getDate() + index * 7);
+      const end = new Date(start);
+      end.setDate(end.getDate() + 7);
+      const entries = latestScoredEntries(allAttempts.filter(attempt => {
+        const time = new Date(attempt.completedAt).getTime();
+        return time >= start.getTime() && time < end.getTime();
+      }));
+      return { label: start.toLocaleDateString(undefined, { month: "short", day: "numeric" }), count: entries.length, score: scorePercentage(entries) };
+    });
+  }
+
+  function renderPerformance() {
+    const attempts = scoredAttemptsInPeriod(performancePeriod);
+    const latest = latestScoredEntries(attempts);
+    const score = scorePercentage(latest);
+    const seconds = attempts.reduce((total, attempt) => total + Math.max(0, Number(attempt.elapsedSec) || 0), 0);
+    const repeat = repeatPerformance(attempts);
+    const weeks = weeklyPerformance();
+    const hasRecentWork = weeks.some(week => week.count > 0);
+    const mostQuestions = Math.max(1, ...weeks.map(week => week.count));
+    const periodButtons = [["today", "Today"], ["week", "This week"], ["all", "All time"]].map(([value, label]) => `<button type="button" data-performance-period="${value}" aria-pressed="${performancePeriod === value}">${label}</button>`).join("");
+    const chapters = book => ACTIVE_CHAPTERS.filter(chapter => chapter.book === book).map(chapter => {
+      const total = chapterQuestions(chapter.id).length;
+      const entries = latest.filter(entry => entry.question.chapterIds.includes(chapter.id));
+      const chapterScore = scorePercentage(entries);
+      const coverage = Math.round(entries.length / total * 100);
+      return `<a class="performance-chapter-row" href="#library/${esc(chapter.id)}"><span class="performance-chapter-name">Ch. ${chapter.number} · ${esc(chapter.title)}</span><span class="performance-coverage"><span>${entries.length} / ${total}</span><span class="performance-track" aria-hidden="true"><span style="width:${coverage}%"></span></span></span><span class="performance-chapter-score">${chapterScore === null ? "—" : `${chapterScore}%`}</span><span class="performance-arrow" aria-hidden="true">→</span></a>`;
+    }).join("");
+    main.innerHTML = `<div class="performance-page">
+      <header class="page-heading performance-heading"><h1>Performance</h1><div class="performance-periods" role="group" aria-label="Performance period">${periodButtons}</div></header>
+      <section class="performance-stats" aria-label="Scored work in selected period">
+        <div><strong>${latest.length}</strong><span>Questions scored</span></div>
+        <div><strong>${score === null ? "—" : `${score}%`}</strong><span>Score</span></div>
+        <div><strong>${attempts.length}</strong><span>Attempts saved</span></div>
+        <div><strong>${esc(recordedTime(seconds))}</strong><span>Recorded work time</span></div>
+      </section>
+      <p class="performance-method">Scores use the latest scored attempt for each question in the selected period.</p>
+      <section class="performance-section" aria-labelledby="chapter-performance-title"><div class="performance-section-heading"><h2 id="chapter-performance-title">By chapter</h2><p>Coverage shows scored questions. Score uses available points on those questions.</p></div>
+        <div class="performance-chapter-head" aria-hidden="true"><span>Chapter</span><span>Scored / available</span><span>Score</span><span></span></div>
+        <h3>Ratemaking</h3><div class="performance-chapter-list">${chapters("Ratemaking")}</div>
+        <h3>Reserving</h3><div class="performance-chapter-list">${chapters("Reserving")}</div>
+        <p class="performance-note">Some questions belong to several chapters, so chapter counts overlap.</p>
+      </section>
+      <section class="performance-section" aria-labelledby="weekly-performance-title"><div class="performance-section-heading"><h2 id="weekly-performance-title">Last 8 weeks</h2><p>Scored questions and point-based score for each week.</p></div>
+        ${hasRecentWork ? `<div class="performance-weeks" role="list">${weeks.map(week => `<div class="performance-week" role="listitem"><span>${esc(week.label)}</span><span class="performance-week-bar"><span style="width:${Math.round(week.count / mostQuestions * 100)}%" aria-hidden="true"></span></span><span>${questionCount(week.count)}</span><strong>${week.score === null ? "—" : `${week.score}%`}</strong></div>`).join("")}</div>` : `<p class="performance-empty">No scored questions in the last 8 weeks.</p>`}
+      </section>
+      <section class="performance-section performance-followup" aria-labelledby="repeat-performance-title"><div class="performance-section-heading"><h2 id="repeat-performance-title">Repeat practice</h2><a href="#retry">${retryQuestions().length} in retry queue →</a></div><div class="performance-repeat-summary"><strong>${repeat.change === null ? "—" : `${repeat.change > 0 ? "+" : ""}${repeat.change} pp`}</strong><span>${repeat.change === null ? `${questionCount(repeat.count)} repeated in this period · 3 needed for a trend` : `First to latest score across ${questionCount(repeat.count)} repeated in this period`}</span></div></section>
+    </div>`;
   }
 
   function renderHome() {
@@ -792,6 +909,13 @@
       homePeriod = homePeriodButton.dataset.homePeriod;
       renderHome();
       main.querySelector(`[data-home-period="${homePeriod}"]`)?.focus();
+      return;
+    }
+    const performancePeriodButton = event.target.closest("[data-performance-period]");
+    if (performancePeriodButton) {
+      performancePeriod = performancePeriodButton.dataset.performancePeriod;
+      renderPerformance();
+      main.querySelector(`[data-performance-period="${performancePeriod}"]`)?.focus();
       return;
     }
     const figureButton = event.target.closest("[data-figure]");
