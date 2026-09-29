@@ -50,7 +50,7 @@ window.SPRING_2013_QUESTIONS = [
       {
         "id": "a",
         "points": 0.5,
-        "prompt": "Calculate the earned car-years for calendar year 2011 .",
+        "prompt": "Calculate the earned car-years for calendar year 2011.",
         "solution": "For CY2011, A Earned ½ exposures =  50 x 2 x ½ = 50 \n                             B also earns ½ exposures = 100 x 2 x ½ = 100  \n       CY2011 Earned Exposures =  50 + 100 = 150",
         "insight": "Treat vehicle counts as the number of covered vehicles, then calculate the fraction of 2011 for which each was insured."
       },
@@ -127,7 +127,7 @@ window.SPRING_2013_QUESTIONS = [
           ],
           [
             "June 30, 2012",
-            113800500,
+            "113,800,500",
             "121,000"
           ],
           [
@@ -289,11 +289,11 @@ window.SPRING_2013_QUESTIONS = [
       },
       {
         "type": "line",
-        "text": "o +3% effective April 1, 2009."
+        "text": "    ◦ +3% effective April 1, 2009."
       },
       {
         "type": "line",
-        "text": "o +2% effective July 1, 2010."
+        "text": "    ◦ +2% effective July 1, 2010."
       },
       {
         "type": "line",
@@ -395,7 +395,7 @@ window.SPRING_2013_QUESTIONS = [
       },
       {
         "type": "line",
-        "text": "• Annual premium trend = -1 %."
+        "text": "• Annual premium trend = -1%."
       },
       {
         "type": "line",
@@ -411,11 +411,11 @@ window.SPRING_2013_QUESTIONS = [
       },
       {
         "type": "line",
-        "text": "o Fixed = 6%."
+        "text": "    ◦ Fixed = 6%."
       },
       {
         "type": "line",
-        "text": "o Variable = 30%."
+        "text": "    ◦ Variable = 30%."
       },
       {
         "type": "line",
@@ -2351,11 +2351,7 @@ window.SPRING_2013_QUESTIONS = [
       },
       {
         "type": "line",
-        "text": "• On January 1, 2010, the company automated some of its production process. As a result, the"
-      },
-      {
-        "type": "line",
-        "text": "company replaced a significant portion of its assembly-line staff with sales staff."
+        "text": "• On January 1, 2010, the company automated some of its production process. As a result, the company replaced a significant portion of its assembly-line staff with sales staff."
       },
       {
         "type": "line",

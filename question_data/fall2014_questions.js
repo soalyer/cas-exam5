@@ -344,11 +344,11 @@ window.FALL_2014_QUESTIONS = [
       },
       {
         "type": "line",
-        "text": "• Historical non-catastrophe ULAE to loss and ALAE ratio= 1.05."
+        "text": "• Historical non-catastrophe ULAE to loss and ALAE ratio = 1.05."
       },
       {
         "type": "line",
-        "text": "• Historical catastrophe ULAE to loss and ALAE ratio= 1.09."
+        "text": "• Historical catastrophe ULAE to loss and ALAE ratio = 1.09."
       },
       {
         "type": "line",
@@ -405,11 +405,11 @@ window.FALL_2014_QUESTIONS = [
       },
       {
         "type": "line",
-        "text": "• Underwriting profit provision= 5%."
+        "text": "• Underwriting profit provision = 5%."
       },
       {
         "type": "line",
-        "text": "• Projected average premium per exposure= $750."
+        "text": "• Projected average premium per exposure = $750."
       },
       {
         "type": "table",
@@ -513,15 +513,15 @@ window.FALL_2014_QUESTIONS = [
       },
       {
         "type": "line",
-        "text": "Variable Expense Ratio 20%"
+        "text": "Variable Expense Ratio: 20%"
       },
       {
         "type": "line",
-        "text": "Profit & Contingency Provision 5%"
+        "text": "Profit & Contingency Provision: 5%"
       },
       {
         "type": "line",
-        "text": "Fixed Expense per Exposure $50"
+        "text": "Fixed Expense per Exposure: $50"
       },
       {
         "type": "line",
@@ -594,11 +594,11 @@ window.FALL_2014_QUESTIONS = [
       },
       {
         "type": "line",
-        "text": "o -5% effective April 1 , 2012, mandated by law to apply to all policies in force with no impact on losses."
+        "text": "    ◦ -5% effective April 1, 2012, mandated by law to apply to all policies in force with no impact on losses."
       },
       {
         "type": "line",
-        "text": "o 10% effective January 1 , 2013."
+        "text": "    ◦ 10% effective January 1, 2013."
       },
       {
         "type": "line",
@@ -622,11 +622,11 @@ window.FALL_2014_QUESTIONS = [
       },
       {
         "type": "line",
-        "text": "o Fixed= 5%"
+        "text": "    ◦ Fixed = 5%"
       },
       {
         "type": "line",
-        "text": "o Variable = 27%."
+        "text": "    ◦ Variable = 27%."
       },
       {
         "type": "line",
@@ -654,19 +654,19 @@ window.FALL_2014_QUESTIONS = [
       },
       {
         "type": "line",
-        "text": "o Countrywide rate indication = 10%."
+        "text": "    ◦ Countrywide rate indication = 10%."
       },
       {
         "type": "line",
-        "text": "o Total Region A rate indication= 8%."
+        "text": "    ◦ Total Region A rate indication = 8%."
       },
       {
         "type": "line",
-        "text": "o Major competitor rate indication for State X = 4%."
+        "text": "    ◦ Major competitor rate indication for State X = 4%."
       },
       {
         "type": "line",
-        "text": "o Annual inflation trend for State X = 3%."
+        "text": "    ◦ Annual inflation trend for State X = 3%."
       },
       {
         "type": "table",
@@ -828,7 +828,7 @@ window.FALL_2014_QUESTIONS = [
       },
       {
         "type": "line",
-        "text": "• The probability each risk will switch insurers at renewal if they are offered a lower price by the new insurer is given by the following equation: Probability= 0.9 x (Difference in Offered Rates)/ True Expected Cost"
+        "text": "• The probability each risk will switch insurers at renewal if they are offered a lower price by the new insurer is given by the following equation: Probability = 0.9 x (Difference in Offered Rates) / True Expected Cost"
       },
       {
         "type": "line",

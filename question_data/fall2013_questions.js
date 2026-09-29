@@ -248,11 +248,11 @@ window.FALL_2013_QUESTIONS = [
       },
       {
         "type": "line",
-        "text": "o +5% effective July 1, 2010."
+        "text": "    ◦ +5% effective July 1, 2010."
       },
       {
         "type": "line",
-        "text": "o + 7% effective April 1, 2012."
+        "text": "    ◦ +7% effective April 1, 2012."
       },
       {
         "type": "line",
@@ -272,7 +272,7 @@ window.FALL_2013_QUESTIONS = [
       },
       {
         "type": "line",
-        "text": "• Variable expense ratio = 21 %."
+        "text": "• Variable expense ratio = 21%."
       },
       {
         "type": "line",
@@ -475,7 +475,7 @@ window.FALL_2013_QUESTIONS = [
       },
       {
         "type": "line",
-        "text": "• Unlimited annual loss frequency trend = -1 %."
+        "text": "• Unlimited annual loss frequency trend = -1%."
       },
       {
         "type": "line",
@@ -491,7 +491,7 @@ window.FALL_2013_QUESTIONS = [
       },
       {
         "type": "line",
-        "text": "• Annual exposure trend = + 1 %."
+        "text": "• Annual exposure trend = + 1%."
       },
       {
         "type": "table",

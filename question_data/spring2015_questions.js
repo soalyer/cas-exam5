@@ -854,11 +854,11 @@ window.SPRING_2015_QUESTIONS = [
       },
       {
         "type": "line",
-        "text": "• 2014 written premium= $200,000."
+        "text": "• 2014 written premium = $200,000."
       },
       {
         "type": "line",
-        "text": "• 2014 earned premium= $170,000."
+        "text": "• 2014 earned premium = $170,000."
       },
       {
         "type": "line",
@@ -874,7 +874,7 @@ window.SPRING_2015_QUESTIONS = [
       },
       {
         "type": "line",
-        "text": "• All other expenses are incurred at the beginning of the policy"
+        "text": "• All other expenses are incurred at the beginning of the policy."
       }
     ],
     "parts": [
@@ -937,7 +937,7 @@ window.SPRING_2015_QUESTIONS = [
       },
       {
         "type": "line",
-        "text": "• Due to market constraints, the company has decided to cap rate increases in any single territory to a maximum of +20%"
+        "text": "• Due to market constraints, the company has decided to cap rate increases in any single territory to a maximum of +20%."
       }
     ],
     "parts": [
@@ -1177,7 +1177,7 @@ window.SPRING_2015_QUESTIONS = [
         "id": "a",
         "points": 1,
         "prompt": "Describe two primary purposes of risk classification.",
-        "solution": "Enhance Fairness – By using risk classification, insureds are priced more closely to their expected losses \nfor the policy.  Thus low risk insureds will pay a lower amount than higher risk insureds.  This way the \nlow risk insureds will not subsidize the high risks and premium is equitable.",
+        "solution": "Enhance Fairness – By using risk classification, insureds are priced more closely to their expected losses for the policy.  Thus low risk insureds will pay a lower amount than higher risk insureds.  This way the low risk insureds will not subsidize the high risks and premium is equitable.\n\nFinancial stability of insurance industry: not identifying risk classes leads to adverse selection whereby insurers undercharge high-risk insureds and overcharge low-risk insureds. Ultimately insurers attract all high-risk insureds and the total premium is inadequate.",
         "insight": "Be able to identify two primary purposes of risk classification and provide some description of how risk classification helped to achieve these purposes."
       }
     ]
